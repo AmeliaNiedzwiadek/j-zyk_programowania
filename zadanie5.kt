@@ -1,41 +1,57 @@
-import java.util.Scanner // Import klasy do wczytywania danych od użytkownika
-// https://docs.oracle.com/javase/8/docs/api/java/util/Scanner.html
-
 fun collatz(c0: Int): List<Int> {
-    require(c0 > 0) { "Liczba początkowa musi być liczbą naturalną (większą od 0)." }
-    // https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/require.html
+    // To jest nasza funkcja. Nazywa się "collatz" i przyjmuje 1 liczbę: c0
+    // Ta liczba musi być większa od zera (czyli naturalna)
 
-    val ciag = mutableListOf(c0) // Tworzymy listę do przechowywania kolejnych wartości
-    var maxWartosc = c0
-    var aktualna = c0
-
-    while (aktualna != 1) { // Iterujemy dopóki ciąg nie wpada w cykl (4, 2, 1)
-        aktualna = if (aktualna % 2 == 0) aktualna / 2 else 3 * aktualna + 1
-        // https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/if.html
-        ciag.add(aktualna)
-        if (aktualna > maxWartosc) maxWartosc = aktualna
+    if (c0 <= 0) {
+        // Sprawdzamy, czy użytkownik nie podał liczby mniejszej lub równej 0
+        // Jeśli tak – zgłaszamy błąd
+        throw IllegalArgumentException("c0 musi być większe od zera.")
+        // Źródło: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/
     }
 
-    return ciag
+    val wynik = mutableListOf<Int>()
+    // Tworzymy pustą listę, do której będziemy zapisywać wszystkie liczby z ciągu
+    // mutableListOf() = lista, którą można zmieniać (dodawać do niej elementy)
+    // Źródło: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/mutable-list-of/
+
+    var c = c0
+    // Tworzymy zmienną c, która będzie aktualną wartością ciągu
+    // Zaczynamy od tej, którą podał użytkownik (czyli od c0)
+
+    while (c != 1) {
+        // Robimy pętlę dopóki c nie będzie równe 1
+
+        wynik.add(c)
+        // Dodajemy obecną wartość c do naszej listy wynikowej
+        // Źródło: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/add/
+
+        if (c % 2 == 0) {
+            // Sprawdzamy, czy c jest parzyste (% 2 == 0 znaczy "dzieli się przez 2")
+            c = c / 2
+            // Jeśli tak – dzielimy przez 2
+        } else {
+            // Jeśli nie (czyli nieparzyste):
+            c = 3 * c + 1
+            // Wtedy mnożymy przez 3 i dodajemy 1
+        }
+    }
+
+    wynik.add(1)
+    // Na końcu dodajemy 1 do listy, bo to ostatnia liczba w ciągu przed cyklem
+
+    return wynik
+    // Zwracamy całą listę – to jest wynik funkcji
 }
 
 fun main() {
-    val scanner = Scanner(System.`in`) // Tworzymy obiekt do odczytu danych
-    // https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.io/java.util.-scanner/
+    val liczba = 7 // nasz początek ciągu
 
-    print("Podaj wartość początkową c0: ")
-    val c0 = scanner.nextInt() // Pobieramy liczbę od użytkownika
+    val ciag = collatz(liczba)
+    // Wywołujemy funkcję collatz i zapisujemy wynik do zmiennej "ciag"
 
-    try {
-        val wynik = collatz(c0)
-        val maxWartosc = wynik.maxOrNull() ?: c0 // Znajdujemy największy element
-        val dlugosc = wynik.size // Długość ciągu
-
-        println("Ciąg Collatza: $wynik")
-        println("Maksymalna wartość w ciągu: $maxWartosc")
-        println("Długość ciągu przed cyklem: ${dlugosc - 1}") // Odejmujemy ostatni element 1
-    } catch (e: IllegalArgumentException) {
-        println("Błąd: ${e.message}")
-    }
+    println("Ciąg Collatza dla $liczba:")
+    println(ciag)
+    // Wypisujemy całą listę
 }
+
 

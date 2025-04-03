@@ -1,27 +1,42 @@
-fun podzbiory(x: List<Char>): List<List<Char>> {
-    // Sprawdzenie, czy argument nie jest pusty
-    // Dokumentacja: https://kotlinlang.org/docs/functions.html#require-check-and-assert
-    require(x.isNotEmpty()) { "Lista nie może być pusta" }
-
-    // Funkcja rekurencyjna do generowania podzbiorów, 
-    fun generujPodzbiory(lista: List<Char>): List<List<Char>> {
-        if (lista.isEmpty()) return listOf(emptyList())
-
-        val pierwszy = lista.first() // Pobranie pierwszego elementu
-        // Dokumentacja: https://kotlinlang.org/docs/collections-overview.html#retrieving-elements
-
-        val reszta = generujPodzbiory(lista.drop(1)) // Rekurencyjne wywołanie dla reszty listy
-        // Dokumentacja: https://kotlinlang.org/docs/collections-overview.html#retrieving-elements
-
-        return reszta + reszta.map { it + pierwszy } // Dodanie pierwszego elementu do każdego podzbioru
-        // Dokumentacja: https://kotlinlang.org/docs/collections-overview.html#transformations
+fun podzbiory(x: List<String>): List<List<String>> {
+    if (x.isEmpty()) {
+        throw IllegalArgumentException("Lista nie może być pusta.")
+        // Źródło: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-argument-exception/
     }
 
-    return generujPodzbiory(x)
+    val wynik = mutableListOf<List<String>>()
+    // Pusta lista, do której będziemy dodawać wszystkie podzbiory
+    // Źródło: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/mutable-list-of/
+
+    wynik.add(listOf())
+    // Dodajemy pusty podzbiór jako pierwszy
+    // Źródło: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/list-of/
+
+    for (element in x) {
+        val nowePodzbiory = mutableListOf<List<String>>()
+        // Lista tymczasowa do przechowywania nowych podzbiorów z aktualnym elementem
+
+        for (istniejacy in wynik) {
+            val nowy = istniejacy + element
+            // Tworzymy nowy podzbiór: istniejący + nowy element
+            nowePodzbiory.add(nowy)
+        }
+
+        wynik.addAll(nowePodzbiory)
+        // Dodajemy wszystkie nowe podzbiory do wyniku
+        // Źródło: https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-collection/add-all/
+    }
+
+    return wynik
+}
+fun main() {
+    val zbior = listOf("a", "b", "c", "d", "e")  // nasz zbiór wejściowy
+    val podzbioryList = podzbiory(zbior) // wywołujemy funkcję
+
+    for (podzbior in podzbioryList) {
+        println(podzbior) // wypisujemy każdy podzbiór
+    }
 }
 
-fun main() {
-    println(podzbiory(listOf('a', 'b', 'c', 'd')))  // Przykład: powinno zwrócić wszystkie podzbiory
-}
 
 
